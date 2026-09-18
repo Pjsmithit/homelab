@@ -143,12 +143,13 @@ metadata:
   labels:
     app.kubernetes.io/name: homepage
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 3000
       targetPort: http
       protocol: TCP
       name: http
+      nodePort: 30002
   selector:
     app.kubernetes.io/name: homepage
 ---
@@ -247,29 +248,3 @@ spec:
             name: homepage
         - name: logs
           emptyDir: {}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: homepage
-  namespace: default
-  labels:
-    app.kubernetes.io/name: homepage
-  annotations:
-    gethomepage.dev/description: K3s Cluster Dashboard
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Cluster Management
-    gethomepage.dev/icon: homepage.png
-    gethomepage.dev/name: Homepage
-spec:
-  rules:
-    - host: "homepage.local"
-      http:
-        paths:
-          - path: "/"
-            pathType: Prefix
-            backend:
-              service:
-                name: homepage
-                port:
-                  number: 3000
