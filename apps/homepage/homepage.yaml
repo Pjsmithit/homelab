@@ -82,12 +82,26 @@ data:
         <h1>🚀 K3s Dashboard</h1>
         <p class="subtitle">Quick access to your cluster services</p>
         <div class="links">
-          <a href="https://192.168.1.141" class="link-card" target="_blank">
+          <a href="https://192.168.1.141:8006/" class="link-card" target="_blank">
             <h3>Proxmox - Node 1</h3>
-            <p>GitOps Deployments</p>
+            <p>Proxmox Nodes</p>
           </a>
-
-
+          <a href="https://192.168.1.142:8006/" class="link-card" target="_blank">
+            <h3>Proxmox - Node 2</h3>
+            <p>Proxmox Nodes</p>
+          </a>
+          <a href="https://192.168.1.150/" class="link-card" target="_blank">
+            <h3>vCentre</h3>
+            <p>VMware Nodes</p>
+          </a>          
+          <a href="https://192.168.1.151/" class="link-card" target="_blank">
+            <h3>ESX - Node 1</h3>
+            <p>VMware Nodes</p>
+          </a>
+          <a href="https://192.168.1.152/" class="link-card" target="_blank">
+            <h3>ESX - Node 2</h3>
+            <p>VMware Nodes</p>
+          </a>
 
 
         
