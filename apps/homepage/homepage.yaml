@@ -1,3 +1,9 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -25,20 +31,23 @@ data:
             - abbr: GH
               href: https://github.com/
   services.yaml: |
-    - My First Group:
-        - My First Service:
-            href: http://localhost/
-            description: Homepage is awesome
+    - Kubernetes:
+        - ArgoCD:
+            href: http://argocd.local
+            description: GitOps Deployments
+            icon: argocd.png
+        - Traefik:
+            href: http://traefik.local/dashboard/
+            description: Ingress Controller
+            icon: traefik.png
 
-    - My Second Group:
-        - My Second Service:
+    - Cluster Management:
+        - Kubernetes Dashboard:
             href: http://localhost/
-            description: Homepage is the best
-
-    - My Third Group:
-        - My Third Service:
-            href: http://localhost/
-            description: Homepage is 😎
+            description: Cluster Management
+        - K3s Docs:
+            href: https://docs.k3s.io/
+            description: K3s Documentation
   widgets.yaml: |
     - kubernetes:
         cluster:
@@ -134,13 +143,12 @@ metadata:
   labels:
     app.kubernetes.io/name: homepage
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 3000
       targetPort: http
       protocol: TCP
       name: http
-      nodePort: 30001
   selector:
     app.kubernetes.io/name: homepage
 ---
@@ -188,7 +196,7 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: HOMEPAGE_ALLOWED_HOSTS
-              value: "$(MY_POD_IP):3000,homepage.default.svc.cluster.local:3000,homepage.local"
+              value: "$(MY_POD_IP):3000,homepage.local,homepage.default.svc.cluster.local"
           ports:
             - name: http
               containerPort: 3000
@@ -199,6 +207,13 @@ spec:
               port: http
             initialDelaySeconds: 5
             periodSeconds: 15
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
             - mountPath: /app/config/custom.js
               name: homepage-config
@@ -240,15 +255,21 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/name: homepage
+  annotations:
+    gethomepage.dev/description: K3s Cluster Dashboard
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Cluster Management
+    gethomepage.dev/icon: homepage.png
+    gethomepage.dev/name: Homepage
 spec:
   rules:
-  - host: homepage.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: homepage
-            port:
-              number: 3000
+    - host: "homepage.local"
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: homepage
+                port:
+                  number: 3000
